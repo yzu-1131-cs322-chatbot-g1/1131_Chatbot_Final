@@ -1,5 +1,11 @@
 # 1131_Chatbot_Final
 
+## 待辦清單
+
+https://github.com/orgs/yzu-1131-cs322-chatbot-g1/projects/7
+
+上面有需要做的事情，可以去認領，也可以看已經做好的東西。
+
 ## 準備工作
 
 ### requirements.txt

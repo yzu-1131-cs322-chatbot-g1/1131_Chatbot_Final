@@ -6,6 +6,8 @@ https://github.com/orgs/yzu-1131-cs322-chatbot-g1/projects/7
 
 上面有需要做的事情，可以去認領，也可以看已經做好的東西。
 
+記得先設定 Assignee 再設定認領狀態。
+
 ## 準備工作
 
 ### requirements.txt

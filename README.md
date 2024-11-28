@@ -25,6 +25,10 @@ pip install -r requirements.txt
 # (若有修改麻煩更新此處)
 [test]
 message = Test World :wink:
+
+[Line]
+CHANNEL_ACCESS_TOKEN=替換成你的
+CHANNEL_SECRET=替換成你的
 ```
 
 ## 開發

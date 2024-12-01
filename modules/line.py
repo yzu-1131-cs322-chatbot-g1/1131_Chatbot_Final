@@ -1,13 +1,14 @@
 import sys
 from logging import Logger
-
 from flask import Flask, request, abort
+
+# custom modules    # 不確定直接 import modules 會不會有問題，但避免循環 import 還是先不要 import 全部
+from modules.config import config
+from modules import azure, gemini
+
+# line imports
 from linebot.v3 import WebhookHandler
 from linebot.v3.exceptions import InvalidSignatureError
-
-from modules.config import config
-
-
 from linebot.v3.webhooks import (
     MessageEvent,
     TextMessageContent,

@@ -32,6 +32,11 @@ CHANNEL_SECRET=替換成你的
 
 [Gemini]
 API_KEY=替換成你的
+
+[AzureTranslator]
+Key=替換成你的
+Region=替換成你的
+EndPoint=https://api.cognitive.microsofttranslator.com/
 ```
 
 ## 開發

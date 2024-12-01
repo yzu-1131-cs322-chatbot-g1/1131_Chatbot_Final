@@ -29,6 +29,9 @@ message = Test World :wink:
 [Line]
 CHANNEL_ACCESS_TOKEN=替換成你的
 CHANNEL_SECRET=替換成你的
+
+[Gemini]
+API_KEY=替換成你的
 ```
 
 ## 開發

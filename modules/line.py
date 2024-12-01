@@ -57,7 +57,7 @@ def callback(app_logger: Logger) -> str:
 
 
 
-def message_text(event) -> None:
+def handle_text_message(event) -> None:
     """
     處理文字訊息的函數
     """

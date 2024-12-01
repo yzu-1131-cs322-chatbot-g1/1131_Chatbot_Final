@@ -17,11 +17,11 @@ def callback():
 
 
 @line.handler.add(line.MessageEvent, message=line.TextMessageContent)
-def message_text(event):
+def handle_text_message(event):
     """
     LINE bot 接收並處理文字訊息
     """
-    return line.message_text(event)
+    return line.handle_text_message(event)
 
 @app.route('/')
 def hello_world():

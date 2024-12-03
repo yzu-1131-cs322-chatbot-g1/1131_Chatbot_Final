@@ -116,7 +116,7 @@ def handle_text_message(event) -> None:
                 chat_mode = new_chat_mode
                 command_handler = CommandHandlers[new_chat_mode]
                 _clean_user_images()
-            returned_message = "聊天模式已切換至：" + chat_mode.value
+            result = "聊天模式已切換至：" + chat_mode.value
         except ValueError:
             result = "找不到指令：" + cmd
         except Exception as e:
@@ -156,17 +156,17 @@ def handle_image_message(event) -> None:
 
     uploaded_image_count = len(os.listdir(user_image_path))
     if chat_mode == ChatMode.GUESS_MOVIE:
-        returned_message = gemini.guess_movie()
+        result = gemini.guess_movie()
         _clean_user_images()
     else:
-        returned_message = f"上傳完成，已上傳 {uploaded_image_count} 張圖片"
+        result = f"上傳完成，已上傳 {uploaded_image_count} 張圖片"
 
     with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
         line_bot_api.reply_message_with_http_info(
             ReplyMessageRequest(
                 reply_token=event.reply_token,
-                messages=[TextMessage(text=returned_message)],
+                messages=[TextMessage(text=result)],
             )
         )
 

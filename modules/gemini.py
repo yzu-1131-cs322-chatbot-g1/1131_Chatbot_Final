@@ -1,4 +1,8 @@
+import os.path
+
 from modules.config import config
+
+import PIL.Image
 import google.generativeai as genai
 
 
@@ -44,3 +48,44 @@ def gemini_llm_sdk(user_input: str = None) -> str:
         return "皆麽奈夫人故障中。"
 
 
+# user image path
+user_image_path = os.path.normpath(config["Line"]["USER_IMAGE_PATH"])
+
+movie_guess_prompt = """
+請使用繁體中文回答。第一行為你的信心指數，介於0~1。第二行為你的猜測。第三行為你的理由。
+"""
+
+movie_guess_model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash-latest",
+    safety_settings={
+        HarmCategory.HARM_CATEGORY_HARASSMENT:HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH:HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT:HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT:HarmBlockThreshold.BLOCK_NONE,
+    },
+    generation_config={
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
+    },
+    system_instruction=movie_guess_prompt,
+)
+
+
+def guess_movie(user_input: str = "你覺得圖片是哪部電影？") -> str:
+    try:
+        image_list = []
+        for image in os.listdir(user_image_path):
+            with PIL.Image.open(os.path.join(user_image_path, image)) as i:
+                image_list.append(i)
+        response = movie_guess_model.generate_content([user_input] + image_list)
+    except Exception as e:
+        return str(e)
+
+    try:
+        return response.text
+    except ValueError:
+        return response.prompt_feedback
+    except Exception as e:
+        return str(e)

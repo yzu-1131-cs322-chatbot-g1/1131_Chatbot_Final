@@ -6,3 +6,5 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read("config.ini")
+
+config["Line"]["USER_IMAGE_PATH"] = "user_images"

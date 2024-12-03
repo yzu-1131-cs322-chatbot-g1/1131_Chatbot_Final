@@ -1,4 +1,5 @@
-import sys
+import os, sys, shutil
+import tempfile
 from logging import Logger
 from enum import Enum
 from pyclbr import Function
@@ -42,6 +43,12 @@ handler = WebhookHandler(channel_secret)
 configuration = Configuration(
     access_token=channel_access_token
 )
+
+
+user_image_path = os.path.normpath(config["Line"]["USER_IMAGE_PATH"])
+if not os.path.exists(user_image_path):
+    os.makedirs(user_image_path)
+
 
 def callback(app_logger: Logger) -> str:
     """
@@ -104,8 +111,12 @@ def handle_text_message(event) -> None:
     if text.startswith("@"):
         cmd = text[1:]
         try:
-            command_handler = CommandHandlers[ChatMode(cmd)]
-            result = "聊天模式已切換至：" + cmd
+            new_chat_mode = ChatMode(cmd)
+            if new_chat_mode != chat_mode:
+                chat_mode = new_chat_mode
+                command_handler = CommandHandlers[new_chat_mode]
+                _clean_user_images()
+            returned_message = "聊天模式已切換至：" + chat_mode.value
         except ValueError:
             result = "找不到指令：" + cmd
         except Exception as e:
@@ -126,38 +137,41 @@ def handle_text_message(event) -> None:
         )
 
 
-def handle_image_message(event):
-    print(event)
-    # with ApiClient(configuration) as api_client:
-    #     line_bot_blob_api = MessagingApiBlob(api_client)
-    #     message_content = line_bot_blob_api.get_message_content(
-    #         message_id=event.message.id
-    #     )
+def handle_image_message(event) -> None:
+    r"""
+    處理圖片訊息的函數。
 
-        # with tempfile.NamedTemporaryFile(
-        #         dir=UPLOAD_FOLDER, prefix="", delete=False
-        # ) as tf:
-        #     tf.write(message_content)
-        #     tempfile_path = tf.name
-    #
-    # original_file_name = os.path.basename(tempfile_path)
-    # os.replace(
-    #     UPLOAD_FOLDER + "/" + original_file_name,
-    #     UPLOAD_FOLDER + "/" + "output.jpg",
-    #     )
-    #
-    # finish_message = "上傳完成，請問你想要問關於這張圖片的什麼問題呢？"
-    #
-    # global is_image_uploaded
-    # is_image_uploaded = True
-    #
-    # with ApiClient(configuration) as api_client:
-    #     line_bot_api = MessagingApi(api_client)
-    #     line_bot_api.reply_message_with_http_info(
-    #         ReplyMessageRequest(
-    #             reply_token=event.reply_token,
-    #             messages=[TextMessage(text=finish_message)],
-    #         )
-    #     )
+    當聊天模式為以圖搜尋時，上傳圖片後會立刻進行電影猜測，並且刪除所有已上傳的圖片。
+
+    黨聊天模式為其他時，上傳圖片後會回傳已上傳圖片數量。
+    """
+    with ApiClient(configuration) as api_client:
+        line_bot_blob_api = MessagingApiBlob(api_client)
+        message_content = line_bot_blob_api.get_message_content(
+            message_id=event.message.id
+        )
+
+        with open(os.path.join(user_image_path, f'{event.message.id}.jpg'), 'wb') as f:
+            f.write(message_content)
+
+    uploaded_image_count = len(os.listdir(user_image_path))
+    if chat_mode == ChatMode.GUESS_MOVIE:
+        returned_message = gemini.guess_movie()
+        _clean_user_images()
+    else:
+        returned_message = f"上傳完成，已上傳 {uploaded_image_count} 張圖片"
+
+    with ApiClient(configuration) as api_client:
+        line_bot_api = MessagingApi(api_client)
+        line_bot_api.reply_message_with_http_info(
+            ReplyMessageRequest(
+                reply_token=event.reply_token,
+                messages=[TextMessage(text=returned_message)],
+            )
+        )
 
 
+def _clean_user_images():
+    if os.path.exists(user_image_path):
+        shutil.rmtree(user_image_path)  # 刪除整個資料夾
+        os.makedirs(user_image_path)  # 重新建立空資料夾

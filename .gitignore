@@ -2,7 +2,7 @@
 .vscode\
 
 config.ini
-user_images\
+user_images
 
 ##############################################################################################################
 ### The following paths are referenced from https://github.com/github/gitignore/blob/main/Python.gitignore ###

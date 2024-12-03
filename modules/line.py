@@ -63,15 +63,16 @@ def callback(app_logger: Logger) -> str:
 
 class ChatMode(Enum):
     """
-    Enum for chat mode
+    Enum for chat mode command without prefix
     """
-    GEMINI = "!Gemini"
-    GUESS_MOVIE = "!看圖找電影"
-    SEARCH_MOVIE = "!查詢電影"
-    SUB_TRANSLATE = "!字幕翻譯"
+    GEMINI = "聊天"
+    SEARCH_MOVIE = "查詢資料庫"
+    GUESS_MOVIE = "以圖搜尋"
+    SUB_TRANSLATE = "字幕翻譯"
 
 
 def foo(x):
+    x = "command not implemented yet\nreceived: " + x
     print(x)
     return x
 
@@ -100,13 +101,13 @@ def handle_text_message(event) -> None:
     result = ""
 
     # text is a command
-    # if text in ChatMode._value2member_map_:   # legacy method
-    if text.startswith("!"):
+    if text.startswith("@"):
+        cmd = text[1:]
         try:
-            command_handler = CommandHandlers[ChatMode(text)]
-            result = "聊天模式已切換至：" + text[1:]
+            command_handler = CommandHandlers[ChatMode(cmd)]
+            result = "聊天模式已切換至：" + cmd
         except ValueError:
-            result = "找不到指令：" + text[1:]
+            result = "找不到指令：" + cmd
         except Exception as e:
             result = "發生錯誤：" + str(e)
 

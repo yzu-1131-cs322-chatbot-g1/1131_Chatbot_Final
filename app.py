@@ -23,6 +23,14 @@ def handle_text_message(event):
     """
     return line.handle_text_message(event)
 
+
+@line.handler.add(line.MessageEvent, message=line.ImageMessageContent)
+def handle_image_message(event):
+    """
+    LINE bot 接收並處理圖片訊息
+    """
+    return line.handle_image_message(event)
+
 @app.route('/')
 def hello_world():
     """

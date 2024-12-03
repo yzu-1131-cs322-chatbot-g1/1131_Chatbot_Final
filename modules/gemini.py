@@ -39,8 +39,9 @@ def gemini_llm_sdk(user_input: str = None) -> str:
         print(f"Question: {user_input}")
         print(f"Answer: {response.text}")
         return response.text
+    except ValueError:
+        return response.prompt_feedback
     except Exception as e:
-        print(e)
-        return "皆麽奈夫人故障中。"
+        return str(e)
 
 

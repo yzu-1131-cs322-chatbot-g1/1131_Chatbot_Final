@@ -70,7 +70,12 @@ def callback(app_logger: Logger) -> str:
 
 class ChatMode(Enum):
     """
-    Enum for chat mode command without prefix
+    聊天模式的列舉，包含：
+
+    - GEMINI: 聊天
+    - SEARCH_MOVIE: 查詢資料庫
+    - GUESS_MOVIE: 以圖搜尋
+    - SUB_TRANSLATE: 字幕翻譯
     """
     GEMINI = "聊天"
     SEARCH_MOVIE = "查詢資料庫"
@@ -84,6 +89,7 @@ def foo(x):
     return x
 
 
+# 不同聊天模式的指令處理函數
 CommandHandlers: dict = {
     ChatMode.GEMINI: gemini.gemini_llm_sdk,
     ChatMode.GUESS_MOVIE: foo,
@@ -100,8 +106,12 @@ command_handler = CommandHandlers[chat_mode]
 
 
 def handle_text_message(event) -> None:
-    """
-    處理文字訊息的函數
+    r"""
+    處理文字訊息的函數。
+
+    當文字訊息為指令時，會切換聊天模式，並刪除所有已上傳的圖片。
+
+    當文字訊息不是指令時，會根據目前聊天模式取得對應的處理函數並進行回應。
     """
     global chat_mode, command_handler
     text = event.message.text

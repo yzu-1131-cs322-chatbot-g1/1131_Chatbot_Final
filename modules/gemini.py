@@ -86,7 +86,6 @@ def guess_movie(uploaded_images, user_input: str = "你覺得圖片是哪部電�
         reason = response_text[2]
         print(f"Question: {user_input}")
         print(f"Answer: {response.text}")
-        print(f"信心指數：{confidence_index}\n猜測：{guessed_name}\n理由：{reason}")
         return response.text
     except Exception as e:
         print(e)

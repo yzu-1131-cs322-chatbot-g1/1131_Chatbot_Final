@@ -53,7 +53,7 @@ def gemini_llm_sdk(user_input: str = None) -> str:
 user_image_path = os.path.normpath(config["Line"]["USER_IMAGE_PATH"])
 
 movie_guess_prompt = """
-請使用繁體中文回答。第一行為你的信心指數，介於0~1。第二行為你的猜測。第三行為你的理由。
+請使用繁體中文回答。第一行是你的信心指數，介於0~1。第二行為你的猜測。如果你的信心指數低於0.5，則增加第三行為你的理由。
 """
 
 movie_guess_model = genai.GenerativeModel(

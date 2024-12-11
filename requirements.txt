@@ -1,5 +1,5 @@
 flask
-pillow
+pillow==11.0.0
 line-bot-sdk
 google-generativeai
 azure-ai-translation-text

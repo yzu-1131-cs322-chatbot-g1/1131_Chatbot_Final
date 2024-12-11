@@ -3,6 +3,7 @@
 
 config.ini
 user_images
+uploads
 
 ##############################################################################################################
 ### The following paths are referenced from https://github.com/github/gitignore/blob/main/Python.gitignore ###

@@ -74,19 +74,15 @@ movie_guess_model = genai.GenerativeModel(
 )
 
 
-def guess_movie(user_input: str = "你覺得圖片是哪部電影？") -> str:
+def guess_movie(uploaded_images, user_input: str = "你覺得圖片是哪部電影？") -> str:
     try:
-        image_list = []
-        for image in os.listdir(user_image_path):
-            with PIL.Image.open(os.path.join(user_image_path, image)) as i:
-                image_list.append(i)
-        response = movie_guess_model.generate_content([user_input] + image_list)
-    except Exception as e:
-        return str(e)
-
-    try:
+        print("Image is uploaded.")
+        print(f"Uploaded images: {uploaded_images}")
+        upload_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
+        response = movie_guess_model.generate_content([user_input] + upload_images)
+        print(f"Question: {user_input}")
+        print(f"Answer: {response.text}")
         return response.text
-    except ValueError:
-        return response.prompt_feedback
     except Exception as e:
-        return str(e)
+        print(e)
+        return "Gemini AI故障中。"

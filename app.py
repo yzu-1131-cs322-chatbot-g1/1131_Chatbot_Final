@@ -31,6 +31,13 @@ def handle_image_message(event):
     """
     return line.handle_image_message(event)
 
+@line.handler.add(line.MessageEvent, message=line.AudioMessageContent)
+def handle_audio_message(event):
+    """
+    LINE bot 接收並處理audio訊息
+    """
+    return line.handle_audio_message(event)
+
 @app.route('/')
 def hello_world():
     """

@@ -80,8 +80,13 @@ def guess_movie(uploaded_images, user_input: str = "你覺得圖片是哪部電�
         print(f"Uploaded images: {uploaded_images}")
         upload_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
         response = movie_guess_model.generate_content([user_input] + upload_images)
+        response_text = response.text.splitlines()
+        confidence_index = response_text[0]
+        guessed_name = response_text[1]
+        reason = response_text[2]
         print(f"Question: {user_input}")
         print(f"Answer: {response.text}")
+        print(f"信心指數：{confidence_index}\n猜測：{guessed_name}\n理由：{reason}")
         return response.text
     except Exception as e:
         print(e)

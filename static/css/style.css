@@ -1,0 +1,143 @@
+body {
+    background-color: #343541; /* 深灰色 */
+    color: white; /* 白色文字 */
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+h1 {
+    text-align: center; /* 置中標題 */
+}
+.current-mode {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.chat-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.chat-buttons button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #10a37f;
+    color: white;
+}
+.chat-buttons button:hover {
+    background-color: #0e8c6a;
+}
+.chat-box {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #444654;
+    color: white;
+    height: 400px;
+    overflow-y: scroll;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.chat-message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+}
+.chat-message.user {
+    background-color: #10a37f;
+    color: white;
+    text-align: right;
+}
+.chat-message.bot {
+    background-color: #3e3f4b;
+    color: white;
+    text-align: left;
+}
+.chat-input {
+    width: 80%;
+    max-width: 800px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.chat-input input[type="text"] {
+    width: calc(100% - 64px); /* 減去圖示和按鈕的寬度 */
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #3e3f4b;
+    color: white;
+    outline: none; /* 移除藍白邊 */
+    height: 44px; /* 與按鈕和圖示一致的高度 */
+    box-sizing: border-box; /* 確保 padding 不會影響高度 */
+}
+.chat-input button {
+    padding: 0 20px; /* 移除上下 padding，確保高度一致 */
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    background-color: #10a37f;
+    color: white;
+    height: 44px; /* 與輸入框和圖示一致的高度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* 確保文字在同一行 */
+}
+.chat-input button:hover {
+    background-color: #0e8c6a;
+}
+.file-upload {
+    width: 80%;
+    max-width: 800px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+}
+.file-upload input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px 0 0 10px;
+    background-color: #3e3f4b;
+    color: white;
+    outline: none; /* 移除藍白邊 */
+}
+.file-upload button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    background-color: #10a37f;
+    color: white;
+}
+.file-upload button:hover {
+    background-color: #0e8c6a;
+}
+.file-upload-label {
+    cursor: pointer;
+    height: 44px; /* 與輸入框和按鈕一致的高度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3e3f4b;
+    border-radius: 10px 0 0 10px;
+    padding: 0 10px;
+}
+.file-upload-label img {
+    width: 24px;
+    height: 24px;
+}

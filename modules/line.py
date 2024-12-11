@@ -105,7 +105,7 @@ CommandHandlers: dict = {
 
 
 # default chat mode
-chat_mode = ChatMode.SEARCH_MOVIE
+chat_mode = ChatMode.GEMINI
 
 # default command handler
 command_handler = CommandHandlers[chat_mode]

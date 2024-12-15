@@ -5,7 +5,8 @@ import shutil
 
 # custom modules
 from modules.config import config
-from modules import line
+from modules import line, gemini
+from modules.gemini import guess_movie
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -92,8 +93,15 @@ def upload_file():
 
     if file:
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return jsonify({'reply': f'檔案 {filename} 上傳成功', 'filename': filename})
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+
+        if line.chat_mode == line.ChatMode.GUESS_MOVIE:
+            reply = gemini.guess_movie([file_path])
+        else:
+            reply = f'檔案 {filename} 上傳成功'
+
+        return jsonify({'reply': reply, 'filename': filename})
 
     return jsonify({'reply': '檔案上傳失敗'}), 400
 

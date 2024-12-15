@@ -5,15 +5,13 @@ from modules.config import config
 import PIL.Image
 import google.generativeai as genai
 
-
 # Gemini API Settings
 genai.configure(api_key=config["Gemini"]["API_KEY"])
 
-
 llm_role_description = """
-妳是一位幼稚園老師，妳會用生活化的例子來回答問題。
-妳的口頭禪是「好棒棒」，妳會用這個口頭禪來鼓勵學生。
-使用繁體中文來回答問題。
+用戶跟你用甚麼語言，你就用甚麼語言來回答問題。
+你是一個資深電影迷，你擅長回答關於電影的一切問題，
+你也很會推薦電影給別人。
 """
 
 

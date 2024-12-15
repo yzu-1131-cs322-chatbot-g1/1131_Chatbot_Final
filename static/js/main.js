@@ -22,7 +22,7 @@ function sendMessage() {
 
     const chatBox = document.getElementById('chat-box');
     const userMessage = document.createElement('div');
-    userMessage.textContent = `你: ${message}`;
+    userMessage.textContent = `你：${message}`;
     userMessage.className = 'chat-message user';
     chatBox.appendChild(userMessage);
 
@@ -36,7 +36,7 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         const botMessage = document.createElement('div');
-        botMessage.textContent = `機器人: ${data.reply}`;
+        botMessage.textContent = `機器人：${data.reply}`;
         botMessage.className = 'chat-message bot';
         chatBox.appendChild(botMessage);
         chatBox.scrollTop = chatBox.scrollHeight;

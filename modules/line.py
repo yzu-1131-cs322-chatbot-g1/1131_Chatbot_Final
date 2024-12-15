@@ -161,7 +161,7 @@ def handle_image_message(event) -> None:
     黨聊天模式為其他時，上傳圖片後會回傳已上傳圖片數量。
     """
     uploaded_images = []
-    UPLOAD_FOLDER="user_images"
+    UPLOAD_FOLDER="uploads"
     
     with ApiClient(configuration) as api_client:
         line_bot_blob_api = MessagingApiBlob(api_client)

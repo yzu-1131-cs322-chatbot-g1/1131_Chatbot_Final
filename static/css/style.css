@@ -53,12 +53,18 @@ h1 {
     border-radius: 10px;
 }
 .chat-message.user {
-    background-color: #10a37f;
+    background-color: #3e3f4b;
     color: white;
-    text-align: right;
+    text-align: left; /* 文字靠左 */
+    max-width: 60%; /* 限制最大寬度 */
+    width: fit-content; /* 根據內容自適應 */
+    margin-left: auto; /* 整體靠右 */
+    padding: 10px;
+    border-radius: 10px;
+    word-wrap: break-word; /* 自動換行 */
 }
 .chat-message.bot {
-    background-color: #3e3f4b;
+    background-color: transparent;
     color: white;
     text-align: left;
 }

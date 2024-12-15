@@ -66,7 +66,7 @@ function uploadFile() {
         reader.readAsDataURL(file); // 將檔案讀取為 Base64 資料 URI
     } else {
         // 如果不是圖片類型，顯示文字訊息
-        userMessage.textContent = `你上傳了檔案: ${file.name}`;
+        userMessage.textContent = `你上傳了檔案：${file.name}`;
         chatBox.appendChild(userMessage);
         chatBox.scrollTop = chatBox.scrollHeight; // 滾動到聊天框底部
     }
@@ -81,7 +81,7 @@ function uploadFile() {
     .then(response => response.json())
     .then(data => {
         const botMessage = document.createElement('div');
-        botMessage.textContent = `機器人: ${data.reply}`;
+        botMessage.textContent = `機器人：${data.reply}`;
         botMessage.className = 'chat-message bot';
         chatBox.appendChild(botMessage);
         chatBox.scrollTop = chatBox.scrollHeight;

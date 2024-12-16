@@ -35,9 +35,17 @@ model = genai.GenerativeModel(
 )
 
 
-def gemini_llm_sdk(user_input: str = None) -> str:
+chat = model.start_chat(history=[])
+
+
+def memorable_gemini(user_input: str = None) -> str:
+    """
+    與有記憶的 Gemini 對話
+    :param user_input:
+    :return:
+    """
     try:
-        response = model.generate_content(user_input)
+        response = chat.send_message(user_input)
         print(f"Question: {user_input}")
         print(f"Answer: {response.text}")
         return response.text
@@ -45,6 +53,28 @@ def gemini_llm_sdk(user_input: str = None) -> str:
         return response.prompt_feedback
     except Exception as e:
         return str(e)
+
+
+def reset_memorable_gemini():
+    """
+    重設有記憶的 memorable Gemini 對話
+    """
+    model.start_chat(history=[])
+
+
+def gemini_llm_sdk(user_input: str = None) -> str:
+    return memorable_gemini(user_input)
+
+    ## Old code
+    # try:
+    #     response = model.generate_content(user_input)
+    #     print(f"Question: {user_input}")
+    #     print(f"Answer: {response.text}")
+    #     return response.text
+    # except ValueError:
+    #     return response.prompt_feedback
+    # except Exception as e:
+    #     return str(e)
 
 
 # user image path

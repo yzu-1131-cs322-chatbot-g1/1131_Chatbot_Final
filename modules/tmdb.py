@@ -29,7 +29,7 @@ class MovieSearch:
         except KeyError as e:
             raise ValueError(f"未在 config.ini 中找到 {str(e)} 配置")
        
-        self.base_url = "https://api.themoviedb.org/3/movie/popular?language=zh-TW'"
+        self.base_url = "https://api.themoviedb.org/3"
         
         # 初始化 Azure 翻譯客戶端
         try:
@@ -101,7 +101,7 @@ class MovieSearch:
             movie_id = search_data['results'][0]['id']
             
             # 第二步：獲取電影詳細資訊
-            details_url = f"{self.base_url}/movie/{movie_id}?api_key={self.tmdb_api_key}&append_to_response=credits,release_dates"
+            details_url = f"{self.base_url}/movie/{movie_id}?language=zh-TW&api_key={self.tmdb_api_key}&append_to_response=credits,release_dates"
             details_response = requests.get(details_url)
             if details_response.status_code != 200:
                 return f"獲取電影詳細資訊時發生錯誤：{details_response.status_code}"

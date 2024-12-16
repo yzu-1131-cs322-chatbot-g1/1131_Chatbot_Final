@@ -56,6 +56,12 @@ function sendMessage() {
     .then(data => {
         const botMessage = document.createElement('div');
         botMessage.textContent = `機器人：${data.reply}`;
+        //格式化回覆訊息 /n就可以換行
+        if(data.reply.includes("\n")){
+            botMessage.innerHTML = data.reply.replace(/\n/g, "<br>");
+        } else {
+            botMessage.textContent = `機器人：${data.reply}`;
+        }
         botMessage.className = 'chat-message bot';
         chatBox.appendChild(botMessage);
         chatBox.scrollTop = chatBox.scrollHeight;

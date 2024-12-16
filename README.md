@@ -37,6 +37,9 @@ API_KEY=替換成你的
 Key=替換成你的
 Region=替換成你的
 EndPoint=https://api.cognitive.microsofttranslator.com/
+
+[TMDB]
+API_KEY=群組裡有
 ```
 
 ## 開發

@@ -11,8 +11,27 @@ function setChatMode(mode) {
         .then(data => {
             document.getElementById('current-mode').textContent = `目前模式: ${chatModeNames[mode]}`;
             document.getElementById('chat-box').innerHTML = ''; // 清空對話框
+
+            const chatInputContainer = document.querySelector('.chat-input');
+            if (mode === 'GUESS_MOVIE') {
+                chatInputContainer.innerHTML = `
+                    <label for="file-input" class="file-upload-label" style="border-radius: 10px 10px 10px 10px;">
+                        <img src="/static/images/attachment.png" alt="Upload">
+                        上傳圖片
+                    </label>
+                    <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
+                `;
+            } else {
+                chatInputContainer.innerHTML = `
+                    <label for="file-input" class="file-upload-label">
+                        <img src="/static/images/attachment.png" alt="Upload">
+                    </label>
+                    <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
+                    <input type="text" id="chat-input" placeholder="輸入訊息..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()">送出</button>
+                `;
+            }
         })
-        .catch(error => console.error('Error:', error));
 }
 
 function sendMessage() {

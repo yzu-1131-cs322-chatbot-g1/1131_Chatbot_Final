@@ -9,7 +9,7 @@ from flask import Flask, request, abort
 
 # custom modules    # 不確定直接 import modules 會不會有問題，但避免循環 import 還是先不要 import 全部
 from modules.config import config
-from modules import azure, gemini
+from modules import azure, gemini, tmdb
 
 # line imports
 from linebot.v3 import WebhookHandler
@@ -99,7 +99,7 @@ def foo(x):
 CommandHandlers: dict = {
     ChatMode.GEMINI: gemini.gemini_llm_sdk,
     ChatMode.GUESS_MOVIE: foo,
-    ChatMode.SEARCH_MOVIE: foo,
+    ChatMode.SEARCH_MOVIE: tmdb.search_movie_command,
     ChatMode.SUB_TRANSLATE: foo,
 }
 

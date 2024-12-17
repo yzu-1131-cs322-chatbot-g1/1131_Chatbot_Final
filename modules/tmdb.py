@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from azure.ai.translation.text import TextTranslationClient
 from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
 from modules import gemini
 
 class MovieSearch:
@@ -232,7 +233,8 @@ class MovieSearch:
                     reviews_section += f"👤 作者: {review['author']}\n"
                     if review['rating'] != '無':
                         reviews_section += f"⭐ 評分: {review['rating']}/10\n"
-                    reviews_section += f"💬 內容: {review['content']}\n\n"
+                        sentiment = azure_sentiment(review['content'])
+                    reviews_section += f"💬 內容: {review['content']}\n分析結果：{sentiment}\n\n"
             else:
                 reviews_section = "🎬 電影評價: 這部電影還沒有人評論\n"
             
@@ -326,3 +328,33 @@ def get_movie_overview(movie_name):
     
     except Exception as e:
         return f"獲取電影劇情簡介時發生未預期的錯誤：{str(e)}"
+    
+def azure_sentiment(user_input):
+    #Config Parser
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    
+    #Config Azure Analytics
+    credential = AzureKeyCredential(config['AzureLanguage']['API_KEY'])
+    
+    text_analytics_client = TextAnalyticsClient(
+        endpoint=config['AzureLanguage']['END_POINT'], 
+        credential=credential)
+    documents = [user_input]
+    response = text_analytics_client.analyze_sentiment(
+        documents, 
+        show_opinion_mining=True,
+        language="zh-hant")
+    print(response)
+    docs = [doc for doc in response if not doc.is_error]
+    result = f"整體：{docs[0].sentiment}\n"
+    for idx, doc in enumerate(docs):
+        for sentence_idx, sentence in enumerate(doc.sentences):
+            opinions = ", ".join([opinion.target.text for opinion in sentence.mined_opinions])
+            result += f"{sentence_idx}：{opinions if opinions else 'N/A'} => {sentence.sentiment}\n"
+        print(f"Document text : {documents[idx]}")
+        print(f"Overall sentiment : {doc.sentiment}")
+    return docs[0].sentiment
+    # sentiment = docs[0].sentiment
+    # scores = docs[0].confidence_scores
+    # return result.strip()

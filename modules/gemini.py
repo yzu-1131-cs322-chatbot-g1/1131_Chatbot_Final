@@ -80,7 +80,7 @@ def new_chat():
 
 
 db_query_instruction = """
-
+我會給你電影的資訊，請你回答我有關這部電影的問題。
 """
 
 
@@ -103,16 +103,14 @@ db_query_model = genai.GenerativeModel(
 )
 
 
-def db_query(user_input: str, uploaded_images: list[str] = None) -> str:
+def db_query(movie_info: str, user_input: str) -> str:
     """
     與 Gemini 對話
     :param user_input:
     :param uploaded_images:
     :return:
     """
-    if uploaded_images:
-        uploaded_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
-        user_input = [user_input] + uploaded_images
+    user_input = f'電影資訊：\n{movie_info}\n我的問題：\n{user_input}'
     try:
         response = db_query_model.generate_content(user_input)
         print(f"Question: {user_input}")

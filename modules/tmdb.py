@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from azure.ai.translation.text import TextTranslationClient
 from azure.core.credentials import AzureKeyCredential
+from modules import gemini
 
 class MovieSearch:
     def __init__(self, config_path=None):
@@ -280,5 +281,7 @@ def search_movie_command(movie_name):
     :param movie_name: 電影名稱
     :return: 電影資訊訊息
     '''
+    movie_name, user_input = movie_name.split('\n', 1)
     movie_searcher = MovieSearch()
-    return movie_searcher.search_movie(movie_name)
+    movie_info = movie_searcher.search_movie(movie_name)
+    return gemini.db_query(movie_info, user_input)

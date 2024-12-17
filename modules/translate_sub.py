@@ -7,6 +7,8 @@ from azure.core.exceptions import HttpResponseError
 from flask import Flask, request, send_file,render_template, send_file
 import os
 
+from modules import subtitle
+
 # Config Parser
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -135,8 +137,13 @@ def translate_srt():
 
     if file and target_languages:
         # 儲存原始檔案
-        srt_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
-        file.save(srt_file_path)
+        video_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+        file.save(video_file_path)
+        subtitle.video_to_subtitle(video_file_path, f'outputs/{file.filename}.srt')
+
+        # 讀取 SRT 檔案內容
+        srt_file_path = os.path.join('outputs', f'{file.filename}.srt')
+        # file.save(srt_file_path)
 
         # 讀取 SRT 檔案內容
         with open(srt_file_path, "r", encoding="utf-8") as f:
@@ -155,12 +162,14 @@ def translate_srt():
         formatted_srt_content = clean_and_format_srt(translated_lines)
         
         # 保存翻譯與格式化後的 SRT 檔案
-        translated_srt_filename = f"translated_{file.filename}"
-        translated_srt_path = os.path.join(app.config["UPLOAD_FOLDER"], translated_srt_filename)
-        with open(translated_srt_path, "w", encoding="utf-8") as f:
+        # translated_srt_filename = f"translated_{file.filename}"
+        # translated_srt_path = os.path.join(app.config["UPLOAD_FOLDER"], translated_srt_filename)
+        with open(srt_file_path, "w", encoding="utf-8") as f:
             f.write(formatted_srt_content)
 
-        return send_file(translated_srt_path, as_attachment=True)
+        subtitle.embed_subtitles('uploads', file.filename, f'../outputs/{file.filename}.srt', f'subtitled_{file.filename}')
+
+        return send_file(f'uploads/subtitled_{file.filename}', as_attachment=True)
 
     return "請提供 SRT 檔案及語言選擇。"
 

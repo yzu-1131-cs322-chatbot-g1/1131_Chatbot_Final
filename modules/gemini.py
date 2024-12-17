@@ -53,6 +53,7 @@ def chat(user_input: str, uploaded_images: list[str] = None) -> str:
     :return: Gemini 的回應
     """
     if uploaded_images:
+        uploaded_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
         user_input = [user_input] + uploaded_images
     try:
         response = chat_session.send_message(user_input)
@@ -110,6 +111,7 @@ def db_query(user_input: str, uploaded_images: list[str] = None) -> str:
     :return:
     """
     if uploaded_images:
+        uploaded_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
         user_input = [user_input] + uploaded_images
     try:
         response = db_query_model.generate_content(user_input)

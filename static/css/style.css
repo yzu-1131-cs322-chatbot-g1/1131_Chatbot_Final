@@ -100,6 +100,7 @@ h1 {
     resize: none; /* 禁止調整大小 */
     overflow: hidden; /* 隱藏滾動條 */
     min-height: 44px; /* 設定最小高度 */
+    font-family: Arial, sans-serif;
 }
 .chat-input button {
     padding: 30px; /* 移除上下 padding，確保高度一致 */

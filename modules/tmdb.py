@@ -139,6 +139,7 @@ class MovieSearch:
             
             # 第一步：搜尋電影
             search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}&language=zh-TW"
+            search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}&language=zh-TW"
             search_response = requests.get(search_url)
             if search_response.status_code != 200:
                 return f"搜尋電影時發生錯誤：{search_response.status_code}"
@@ -291,3 +292,38 @@ def search_movie_command(movie_name):
         return gemini.db_query(movie_info, user_input)
     else:
         return movie_info
+    
+def get_movie_overview(movie_name):
+    """
+    獲取電影的劇情簡介
+    :param movie_name: 電影名稱
+    :return: 劇情簡介
+    """
+    try:
+        movie_searcher = MovieSearch()
+        # 搜尋電影
+        search_url = f"{movie_searcher.base_url}/search/movie?api_key={movie_searcher.tmdb_api_key}&query={movie_name}&language=zh-TW"
+        search_response = requests.get(search_url)
+        if search_response.status_code != 200:
+            return f"搜尋電影時發生錯誤：{search_response.status_code}"
+        search_data = search_response.json()
+        
+        # 如果沒有找到電影
+        if not search_data['results']:
+            return "找不到相關電影"
+        
+        # 取第一個搜尋結果的電影 ID
+        movie_id = search_data['results'][0]['id']
+        
+        # 獲取電影詳細資訊
+        details_url = f"{movie_searcher.base_url}/movie/{movie_id}?language=zh-TW&api_key={movie_searcher.tmdb_api_key}"
+        details_response = requests.get(details_url)
+        if details_response.status_code != 200:
+            return f"獲取電影詳細資訊時發生錯誤：{details_response.status_code}"
+        movie_details = details_response.json()
+        
+        # 返回劇情簡介
+        return movie_details.get('overview', '無劇情簡介')
+    
+    except Exception as e:
+        return f"獲取電影劇情簡介時發生未預期的錯誤：{str(e)}"

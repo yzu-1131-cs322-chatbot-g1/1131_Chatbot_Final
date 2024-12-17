@@ -1,6 +1,7 @@
 import os.path
 
 from modules.config import config
+from modules import tmdb
 
 import PIL.Image
 import google.generativeai as genai
@@ -159,12 +160,18 @@ def guess_movie(uploaded_images, user_input: str = "你覺得圖片是哪部電�
         upload_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
         response = movie_guess_model.generate_content([user_input] + upload_images)
         response_text = response.text.splitlines()
-        confidence_index = response_text[0]
+        confidence_index = float(response_text[0])
         guessed_name = response_text[1]
-        reason = response_text[2]
         print(f"Question: {user_input}")
         print(f"Answer: {response.text}")
-        return response.text
+        if(confidence_index > 0.5):
+            tmdb_response = tmdb.get_movie_overview(guessed_name)
+            string = f'{guessed_name}\n簡介：\n{tmdb_response}\n'
+            return string
+        else:
+            reason = response_text[2]
+            string = f'信心指數：{confidence_index}\n猜測：{guessed_name}\n理由：{reason}'
+            return confidence_index, guessed_name, reason
     except Exception as e:
         print(e)
         return "Gemini AI故障中。"

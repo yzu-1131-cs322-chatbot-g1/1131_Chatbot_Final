@@ -97,7 +97,7 @@ def foo(x):
 
 # 不同聊天模式的指令處理函數
 CommandHandlers: dict = {
-    ChatMode.GEMINI: gemini.gemini_llm_sdk,
+    ChatMode.GEMINI: gemini.chat,
     ChatMode.GUESS_MOVIE: foo,
     ChatMode.SEARCH_MOVIE: tmdb.search_movie_command,
     ChatMode.SUB_TRANSLATE: foo,

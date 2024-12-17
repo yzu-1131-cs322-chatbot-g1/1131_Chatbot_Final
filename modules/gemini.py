@@ -4,20 +4,27 @@ from modules.config import config
 
 import PIL.Image
 import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+
 
 # Gemini API Settings
 genai.configure(api_key=config["Gemini"]["API_KEY"])
 
-llm_role_description = """
+
+####################################################################################################
+# Continuous chat
+####################################################################################################
+
+
+chat_model_instruction = """
 用戶跟你用甚麼語言，你就用甚麼語言來回答問題。
 你是一個資深電影迷，你擅長回答關於電影的一切問題，
 你也很會推薦電影給別人。
 """
 
 
-# Use the model
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-model = genai.GenerativeModel(
+# base model
+chat_model = genai.GenerativeModel(
     model_name="gemini-1.5-flash-latest",
     safety_settings={
         HarmCategory.HARM_CATEGORY_HARASSMENT:HarmBlockThreshold.BLOCK_NONE,
@@ -31,21 +38,24 @@ model = genai.GenerativeModel(
         "top_k": 64,
         "max_output_tokens": 8192,
     },
-    system_instruction=llm_role_description,
+    system_instruction=chat_model_instruction,
 )
 
 
-chat = model.start_chat(history=[])
+chat_session = chat_model.start_chat(history=[])
 
 
-def memorable_gemini(user_input: str = None) -> str:
+def chat(user_input: str, uploaded_images: list[str] = None) -> str:
     """
-    與有記憶的 Gemini 對話
-    :param user_input:
-    :return:
+    與有記憶的 Gemini 對話。
+    :param user_input: 使用者輸入的文字，不可以是 None
+    :param uploaded_images: 使用者上傳的圖片，可以是 None
+    :return: Gemini 的回應
     """
+    if uploaded_images:
+        user_input = [user_input] + uploaded_images
     try:
-        response = chat.send_message(user_input)
+        response = chat_session.send_message(user_input)
         print(f"Question: {user_input}")
         print(f"Answer: {response.text}")
         return response.text
@@ -55,26 +65,66 @@ def memorable_gemini(user_input: str = None) -> str:
         return str(e)
 
 
-def reset_memorable_gemini():
+def new_chat():
     """
-    重設有記憶的 memorable Gemini 對話
+    開始新的對話。
     """
-    model.start_chat(history=[])
+    global chat_session
+    chat_session = chat_model.start_chat(history=[])
 
 
-def gemini_llm_sdk(user_input: str = None) -> str:
-    return memorable_gemini(user_input)
+####################################################################################################
+# Database query
+####################################################################################################
 
-    ## Old code
-    # try:
-    #     response = model.generate_content(user_input)
-    #     print(f"Question: {user_input}")
-    #     print(f"Answer: {response.text}")
-    #     return response.text
-    # except ValueError:
-    #     return response.prompt_feedback
-    # except Exception as e:
-    #     return str(e)
+
+db_query_instruction = """
+
+"""
+
+
+# base model
+db_query_model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash-latest",
+    safety_settings={
+        HarmCategory.HARM_CATEGORY_HARASSMENT:HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH:HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT:HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT:HarmBlockThreshold.BLOCK_NONE,
+    },
+    generation_config={
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
+    },
+    system_instruction=db_query_instruction,
+)
+
+
+def db_query(user_input: str, uploaded_images: list[str] = None) -> str:
+    """
+    與 Gemini 對話
+    :param user_input:
+    :param uploaded_images:
+    :return:
+    """
+    if uploaded_images:
+        user_input = [user_input] + uploaded_images
+    try:
+        response = db_query_model.generate_content(user_input)
+        print(f"Question: {user_input}")
+        print(f"Answer: {response.text}")
+        return response.text
+    except ValueError:
+        return response.prompt_feedback
+    except Exception as e:
+        return str(e)
+
+
+####################################################################################################
+# Guess movie
+####################################################################################################
 
 
 # user image path

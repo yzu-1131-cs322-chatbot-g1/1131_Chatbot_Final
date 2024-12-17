@@ -80,7 +80,7 @@ def new_chat():
 
 
 db_query_instruction = """
-我會給你電影的資訊，請你回答我有關這部電影的問題。
+你是一個協助回答電影相關問題的聊天機器人，會提供給你電影的資訊，以及使用者的問題。
 """
 
 
@@ -106,11 +106,11 @@ db_query_model = genai.GenerativeModel(
 def db_query(movie_info: str, user_input: str) -> str:
     """
     與 Gemini 對話
+    :param movie_info:
     :param user_input:
-    :param uploaded_images:
     :return:
     """
-    user_input = f'電影資訊：\n{movie_info}\n我的問題：\n{user_input}'
+    user_input = f'電影資訊：\n{movie_info}\n使用者的問題：\n{user_input}'
     try:
         response = db_query_model.generate_content(user_input)
         print(f"Question: {user_input}")

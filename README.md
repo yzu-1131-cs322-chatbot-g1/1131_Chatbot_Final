@@ -38,6 +38,10 @@ Key=替換成你的
 Region=替換成你的
 EndPoint=https://api.cognitive.microsofttranslator.com/
 
+[AzureSpeech]
+SPEECH_KEY=替換成你的
+SPEECH_REGION=替換成你的
+
 [TMDB]
 API_KEY=群組裡有
 ```

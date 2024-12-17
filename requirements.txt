@@ -3,3 +3,5 @@ pillow==11.0.0
 line-bot-sdk
 google-generativeai
 azure-ai-translation-text
+azure-cognitiveservices-speech
+ffmpeg-python

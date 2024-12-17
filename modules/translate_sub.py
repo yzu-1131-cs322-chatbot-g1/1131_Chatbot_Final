@@ -97,19 +97,7 @@ def clean_and_format_srt(srt_lines):
                 line = line1
             else:
                 line = f"{line1}\n{line2}"
-        if len(time_lines) == 3:
-            line1 = time_lines[0].strip()
-            line2 = time_lines[1].strip()
-            line3 = time_lines[2].strip()
-
-            if line1 == line2:  # 如果兩個時間軸相同，則跳過第二個
-                line=line1            
-        if len(time_lines) == 4:
-            line1 = time_lines[0].strip()
-            line2 = time_lines[1].strip()
-            line3 = time_lines[2].strip()
-            line4 = time_lines[3].strip()
-
+                
             if line1 == line2:  # 如果兩個時間軸相同，則跳過第二個
                 line=line1 
 
@@ -166,7 +154,6 @@ def translate_srt():
         # 格式化翻譯後的字幕內容
         formatted_srt_content = clean_and_format_srt(translated_lines)
         
-
         # 保存翻譯與格式化後的 SRT 檔案
         translated_srt_filename = f"translated_{file.filename}"
         translated_srt_path = os.path.join(app.config["UPLOAD_FOLDER"], translated_srt_filename)

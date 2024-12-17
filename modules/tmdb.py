@@ -237,36 +237,37 @@ class MovieSearch:
             
             # 格式化回覆訊息
             message = f"""🎬 電影基本資訊:
-📝 電影名稱: {translated_title}
-🌍 原始語言: {original_language.upper()}
-⭐ 電影評分: {movie_details['vote_average']}/10
-📊 評價統計:
-🔢 總投票數: {movie_details['vote_count']} 票
-
-📅 上映資訊:
-🗓️ 上映日期: {formatted_release_date}
-📊 電影狀態: {movie_status}
-
-👥 創作團隊:
-🎥 導演: {director}
-🌟 主演: {main_actors}
-
-🎭 電影類型: {genres_str}
-
-📍 製作資訊:
-🌐 製作國家: {countries_str}
-🏢 製片公司: {companies_str}
-🗣️ 電影語言: {languages_str}
-
-📖 劇情簡介: 
-{translated_overview}
-
-💰 財務資訊:
-💸 電影預算: ${budget:,} USD
-💰 全球票房: ${revenue:,} USD
-
-{reviews_section}
-"""
+            📝 電影名稱: {translated_title}
+            🌍 原始語言: {original_language.upper()}
+            ⭐ 電影評分: {movie_details['vote_average']}/10
+            {reviews_section}
+            📊 評價統計:
+            🔢 總投票數: {movie_details['vote_count']} 票
+            
+            📅 上映資訊:
+            🗓️ 上映日期: {formatted_release_date}
+            📊 電影狀態: {movie_status}
+            
+            👥 創作團隊:
+            🎥 導演: {director}
+            🌟 主演: {main_actors}
+            
+            🎭 電影類型: {genres_str}
+            
+            📍 製作資訊:
+            🌐 製作國家: {countries_str}
+            🏢 製片公司: {companies_str}
+            🗣️ 電影語言: {languages_str}
+            
+            📖 劇情簡介: 
+            {translated_overview}
+            
+            💰 財務資訊:
+            💸 電影預算: ${budget:,} USD
+            💰 全球票房: ${revenue:,} USD
+            
+            {reviews_section}
+            """
             return message
        
         except Exception as e:

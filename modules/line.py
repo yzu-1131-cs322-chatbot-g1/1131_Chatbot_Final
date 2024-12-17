@@ -1,6 +1,5 @@
 import os, sys, shutil
 import tempfile
-import ffmpeg
 from logging import Logger
 from enum import Enum
 from pyclbr import Function

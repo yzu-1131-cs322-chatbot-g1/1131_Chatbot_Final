@@ -45,6 +45,8 @@ configuration = Configuration(
 )
 
 def _clean_user_images():
+    global uploaded_images
+    uploaded_images = []
     if os.path.exists(user_image_path):
         shutil.rmtree(user_image_path)  # 刪除整個資料夾
         os.makedirs(user_image_path)  # 重新建立空資料夾
@@ -110,6 +112,9 @@ chat_mode = ChatMode.GEMINI
 # default command handler
 command_handler = CommandHandlers[chat_mode]
 
+# uploaded images path
+uploaded_images: list[str] = []
+
 
 def handle_text_message(event) -> None:
     r"""
@@ -119,7 +124,7 @@ def handle_text_message(event) -> None:
 
     當文字訊息不是指令時，會根據目前聊天模式取得對應的處理函數並進行回應。
     """
-    global chat_mode, command_handler
+    global chat_mode, command_handler, uploaded_images
     text = event.message.text
     result = ""
 
@@ -140,7 +145,10 @@ def handle_text_message(event) -> None:
 
     # text is not a command
     else:
-        result = command_handler(text)
+        if chat_mode == ChatMode.GEMINI:
+            result = gemini.chat(text, uploaded_images=uploaded_images)
+        else:
+            result = command_handler(text)
 
     # send response
     with ApiClient(configuration) as api_client:
@@ -160,7 +168,7 @@ def handle_image_message(event) -> None:
 
     黨聊天模式為其他時，上傳圖片後會回傳已上傳圖片數量。
     """
-    uploaded_images = []
+    global uploaded_images
     UPLOAD_FOLDER="uploads"
     
     with ApiClient(configuration) as api_client:

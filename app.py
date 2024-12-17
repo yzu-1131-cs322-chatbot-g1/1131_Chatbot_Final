@@ -122,7 +122,7 @@ def upload_file():
 
             # generate subtitled video
 
-            subtitle.embed_subtitles(output_path, input_file_path, subtitle_path, output_video_path)
+            subtitle.embed_subtitles(output_path, input_file_path, f'{filename}.srt', output_video_path)
             reply = request.url_root + f'uploads/subtitled_{filename}'
         else:
             reply = f'檔案 {filename} 上傳成功'

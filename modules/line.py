@@ -140,7 +140,7 @@ def handle_text_message(event, text = None) -> None:
                 _clean_user_images()
             result = "聊天模式已切換至：" + chat_mode.value
             if(chat_mode == ChatMode.SEARCH_MOVIE):
-                result += "\n請照格式輸入：\n<電影名稱>,<所需資訊>\n例如：導演,演員,評價"
+                result += "\n請照格式輸入：\n<電影名稱>\n<問題>\例子:\nJohn Wick\n我想知道John Wick的導演和評價"
         except ValueError:
             result = "找不到指令：" + cmd
         except Exception as e:

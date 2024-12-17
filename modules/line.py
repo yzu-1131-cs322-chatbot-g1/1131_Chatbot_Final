@@ -18,6 +18,7 @@ from linebot.v3.webhooks import (
     MessageEvent,
     TextMessageContent,
     ImageMessageContent,
+    AudioMessageContent,  # 新增這一行
 )
 from linebot.v3.messaging import (
     Configuration,
@@ -145,6 +146,133 @@ def handle_text_message(event) -> None:
                 messages=[TextMessage(text=result)]
             )
         )
+
+
+#ffmpeg
+import subprocess
+import azure.cognitiveservices.speech as speechsdk
+import time
+
+# Azure Speech Settings
+speech_config = speechsdk.SpeechConfig(subscription=config['AzureSpeech']['SPEECH_KEY'], 
+                                       region=config['AzureSpeech']['SPEECH_REGION'])
+audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
+
+def handle_audio_message(event) -> None:
+    """
+    處理 LINE bot 接收到的語音訊息，先用ppmpeg把line的音檔格式完全轉換成azure的wav，再使用 Azure Speech Services 進行語音轉文字。
+    """
+    # 取得 UserId（假設從 event 中取得）
+    UserId = event.source.user_id
+
+    # 取得語音內容
+    with ApiClient(configuration) as api_client:
+        blob_api = MessagingApiBlob(api_client)
+        UserSendAudio = blob_api.get_message_content(event.message.id)
+    
+    # 儲存語音檔案到本地，使用時間戳避免覆蓋
+    timestamp = int(time.time())  # 獲取當前時間戳
+
+    # 儲存語音檔案到本地
+    audio_dir = 'audio/'
+    if not os.path.exists(audio_dir):
+        os.makedirs(audio_dir)
+    
+    # 因為檔案名稱重複的話程式會卡住，所以檔案名稱要加上時間
+    #audio_file_path = os.path.join(audio_dir, f'{UserId}.wav')
+    audio_file_path = os.path.join(audio_dir, f'{UserId}_{timestamp}.wav')
+
+    # 儲存語音內容
+    with open(audio_file_path, 'wb') as fd:
+        fd.write(UserSendAudio)
+
+    # 確認檔案可以被正確讀取
+    try:
+        with open(audio_file_path, 'rb') as f:
+            data = f.read()
+        print("檔案讀取成功，檔案大小：", len(data))
+    except Exception as e:
+        print("無法讀取檔案：", e)
+    #audio_file_path = f'{UserId}.wav'
+    print(audio_file_path)
+    
+    # 輸出轉換後的音檔路徑
+    #output_audio_file = os.path.join("modules", f"{UserId}_converted.wav")
+    output_audio_file = os.path.join(audio_dir, f'{UserId}_{timestamp}_converted.wav')
+
+    # 官網下載
+    FFMPEG_PATH = r"C:\inital\linebot\ffmpeg-2024-12-11-git-a518b5540d-essentials_build\bin\ffmpeg.exe"
+    # 測試 FFmpeg 是否能運作
+    try:
+        subprocess.run([FFMPEG_PATH, "-version"], check=True)
+        print("FFmpeg 運作正常！")
+    except FileNotFoundError:
+        print("找不到 FFmpeg，請檢查路徑是否正確！")
+    except Exception as e:
+        print(f"執行 FFmpeg 出錯：{e}")
+    
+    # 使用 FFmpeg 轉換音檔格式
+    try:
+        subprocess.run([
+            FFMPEG_PATH, "-i", audio_file_path, "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", output_audio_file
+        ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"音檔轉換成功，儲存為: {output_audio_file}")
+    except subprocess.CalledProcessError as e:
+        print(f"音檔轉換失敗: {e.stderr}")
+
+    # 設定輸入音訊文件
+    audio_config = speechsdk.audio.AudioConfig(filename=output_audio_file)
+    
+    print(audio_config)
+
+    # 設定語言
+    #speech_config.speech_recognition_language = "zh-TW"
+
+    # 設定自動偵測語言，支援兩種以上語言
+    auto_detect_source_language_config = speechsdk.languageconfig.AutoDetectSourceLanguageConfig(
+        languages=["zh-TW", "en-US", "ja-JP"]  # 您要 Azure 偵測的語言列表
+    )
+
+    # 設定自動偵測語言，支援兩種以上語言
+    auto_detect_source_language_config = speechsdk.languageconfig.AutoDetectSourceLanguageConfig(
+        languages=["zh-TW", "en-US", "ja-JP"]  # 您要 Azure 偵測的語言列表
+    )
+
+    # 建立語音辨識器，啟用自動語言偵測
+    speech_recognizer = speechsdk.SpeechRecognizer(
+        speech_config=speech_config,
+        audio_config=audio_config,
+        auto_detect_source_language_config=auto_detect_source_language_config
+    )
+
+    # 執行語音轉文字
+    print("正在進行語音轉文字...")
+    result = speech_recognizer.recognize_once()
+
+    # 處理結果
+    if result.reason == speechsdk.ResultReason.RecognizedSpeech:
+            print(f"辨識結果：{result.text}")
+            #return result.text
+    elif result.reason == speechsdk.ResultReason.NoMatch:
+            print("無法辨識語音內容。")
+            #return "無法辨識語音內容"
+    elif result.reason == speechsdk.ResultReason.Canceled:
+            cancellation_details = result.cancellation_details
+            print(f"語音轉文字過程被取消：{cancellation_details.reason}")
+            if cancellation_details.reason == speechsdk.CancellationReason.Error:
+                print(f"詳細錯誤：{cancellation_details.error_details}")
+            #return "語音轉文字失敗"
+
+    # 回應使用者
+    with ApiClient(configuration) as api_client:
+        line_bot_api = MessagingApi(api_client)
+        line_bot_api.reply_message_with_http_info(
+            ReplyMessageRequest(
+                reply_token=event.reply_token,
+                messages=[TextMessage(text=result.text)]
+            )
+        )
+        
 
 
 def handle_image_message(event) -> None:

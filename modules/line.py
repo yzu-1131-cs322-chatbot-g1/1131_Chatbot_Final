@@ -1,5 +1,6 @@
 import os, sys, shutil
 import tempfile
+import ffmpeg
 from logging import Logger
 from enum import Enum
 from pyclbr import Function
@@ -155,7 +156,6 @@ def handle_text_message(event) -> None:
 
 
 #ffmpeg
-import subprocess
 import azure.cognitiveservices.speech as speechsdk
 import time
 
@@ -206,11 +206,12 @@ def handle_audio_message(event) -> None:
     #output_audio_file = os.path.join("modules", f"{UserId}_converted.wav")
     output_audio_file = os.path.join(audio_dir, f'{UserId}_{timestamp}_converted.wav')
 
+    import subprocess
     # 官網下載
-    FFMPEG_PATH = r"C:\inital\linebot\ffmpeg-2024-12-11-git-a518b5540d-essentials_build\bin\ffmpeg.exe"
+    # FFMPEG_PATH = r"C:\inital\linebot\ffmpeg-2024-12-11-git-a518b5540d-essentials_build\bin\ffmpeg.exe"
     # 測試 FFmpeg 是否能運作
     try:
-        subprocess.run([FFMPEG_PATH, "-version"], check=True)
+        subprocess.run(["ffmpeg", "-version"], check=True)
         print("FFmpeg 運作正常！")
     except FileNotFoundError:
         print("找不到 FFmpeg，請檢查路徑是否正確！")
@@ -218,13 +219,18 @@ def handle_audio_message(event) -> None:
         print(f"執行 FFmpeg 出錯：{e}")
     
     # 使用 FFmpeg 轉換音檔格式
+    # try:
+    #     subprocess.run([
+    #         "FFMPEG_PATH", "-i", audio_file_path, "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", output_audio_file
+    #     ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #     print(f"音檔轉換成功，儲存為: {output_audio_file}")
+    # except subprocess.CalledProcessError as e:
+    #     print(f"音檔轉換失敗: {e.stderr}")
     try:
-        subprocess.run([
-            FFMPEG_PATH, "-i", audio_file_path, "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", output_audio_file
-        ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        ffmpeg.input(audio_file_path).output(output_audio_file, ar=16000, ac=1, c='pcm_s16le').run()
         print(f"音檔轉換成功，儲存為: {output_audio_file}")
-    except subprocess.CalledProcessError as e:
-        print(f"音檔轉換失敗: {e.stderr}")
+    except ffmpeg.Error as e:
+        print(f"音檔轉換失敗: {e.stderr.decode('utf8')}")
 
     # 設定輸入音訊文件
     audio_config = speechsdk.audio.AudioConfig(filename=output_audio_file)

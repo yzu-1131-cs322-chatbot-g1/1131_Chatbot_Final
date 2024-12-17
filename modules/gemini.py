@@ -5,15 +5,13 @@ from modules.config import config
 import PIL.Image
 import google.generativeai as genai
 
-
 # Gemini API Settings
 genai.configure(api_key=config["Gemini"]["API_KEY"])
 
-
 llm_role_description = """
-妳是一位幼稚園老師，妳會用生活化的例子來回答問題。
-妳的口頭禪是「好棒棒」，妳會用這個口頭禪來鼓勵學生。
-使用繁體中文來回答問題。
+用戶跟你用甚麼語言，你就用甚麼語言來回答問題。
+你是一個資深電影迷，你擅長回答關於電影的一切問題，
+你也很會推薦電影給別人。
 """
 
 
@@ -53,7 +51,7 @@ def gemini_llm_sdk(user_input: str = None) -> str:
 user_image_path = os.path.normpath(config["Line"]["USER_IMAGE_PATH"])
 
 movie_guess_prompt = """
-請使用繁體中文回答。第一行為你的信心指數，介於0~1。第二行為你的猜測。第三行為你的理由。
+請使用繁體中文回答。第一行是你的信心指數，介於0~1。第二行為你的猜測。如果你的信心指數低於0.5，則增加第三行為你的理由。
 """
 
 movie_guess_model = genai.GenerativeModel(
@@ -74,19 +72,19 @@ movie_guess_model = genai.GenerativeModel(
 )
 
 
-def guess_movie(user_input: str = "你覺得圖片是哪部電影？") -> str:
+def guess_movie(uploaded_images, user_input: str = "你覺得圖片是哪部電影？") -> str:
     try:
-        image_list = []
-        for image in os.listdir(user_image_path):
-            with PIL.Image.open(os.path.join(user_image_path, image)) as i:
-                image_list.append(i)
-        response = movie_guess_model.generate_content([user_input] + image_list)
-    except Exception as e:
-        return str(e)
-
-    try:
+        print("Image is uploaded.")
+        print(f"Uploaded images: {uploaded_images}")
+        upload_images = [PIL.Image.open(image_path) for image_path in uploaded_images]
+        response = movie_guess_model.generate_content([user_input] + upload_images)
+        response_text = response.text.splitlines()
+        confidence_index = response_text[0]
+        guessed_name = response_text[1]
+        reason = response_text[2]
+        print(f"Question: {user_input}")
+        print(f"Answer: {response.text}")
         return response.text
-    except ValueError:
-        return response.prompt_feedback
     except Exception as e:
-        return str(e)
+        print(e)
+        return "Gemini AI故障中。"

@@ -2,18 +2,28 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
-    <style>
-        body {
-            background-color: #282c34; /* 深灰色 */
-            color: white; /* 白色文字 */
-        }
-        h1 {
-            text-align: center; /* 置中標題 */
-        }
-    </style>
+    <title>電影AI助手</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="static\images\movie.png">
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body>
-    <h1>{{ msg }}</h1>
+    <h1> 電影AI助手 </h1>
+    <div class="current-mode" id="current-mode">目前模式: {{ chat_mode }}</div>
+    <div class="chat-buttons">
+        <button onclick="setChatMode('GEMINI')">聊天</button>
+        <button onclick="setChatMode('SEARCH_MOVIE')">查詢資料庫</button>
+        <button onclick="setChatMode('GUESS_MOVIE')">以圖搜尋</button>
+        <button onclick="setChatMode('SUB_TRANSLATE')">字幕翻譯</button>
+    </div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input">
+        <label for="file-input" class="file-upload-label">
+            <img src="{{ url_for('static', filename='images/attachment.png') }}" alt="Upload">
+        </label>
+        <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
+        <input type="text" id="chat-input" placeholder="輸入訊息..." onkeydown="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">送出</button>
+    </div>
 </body>
 </html>

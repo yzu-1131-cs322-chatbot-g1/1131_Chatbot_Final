@@ -17,11 +17,18 @@ function setChatMode(mode) {
                 chatInputContainer.innerHTML = `
                     <label for="file-input" class="file-upload-label" style="border-radius: 10px 10px 10px 10px;">
                         <img src="/static/images/attachment.png" alt="Upload">
-                        上傳圖片
+                        上傳檔案
                     </label>
                     <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
                 `;
-            } else {
+            } 
+            else if (mode === 'SEARCH_MOVIE') {
+                chatInputContainer.innerHTML = `
+                    <input type="text" style="border-radius: 10px 10px 10px 10px;" id="chat-input" placeholder="輸入電影名稱..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()">送出</button>
+                `;   
+            }
+            else if (mode === 'GEMINI') {
                 chatInputContainer.innerHTML = `
                     <label for="file-input" class="file-upload-label">
                         <img src="/static/images/attachment.png" alt="Upload">

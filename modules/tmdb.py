@@ -100,7 +100,7 @@ class MovieSearch:
         :return: 電影評論列表
         """
         try:
-            reviews_url = f"{self.base_url}/movie/{movie_id}/reviews?api_key={self.tmdb_api_key}&language=zh-TW"
+            reviews_url = f"{self.base_url}/movie/{movie_id}/reviews?api_key={self.tmdb_api_key}&language=en-US"
             reviews_response = requests.get(reviews_url)
             
             if reviews_response.status_code != 200:
@@ -138,7 +138,6 @@ class MovieSearch:
             #     movie_name = self._translate_text(movie_name, 'en')
             
             # 第一步：搜尋電影
-            search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}&language=zh-TW"
             search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}&language=zh-TW"
             search_response = requests.get(search_url)
             if search_response.status_code != 200:

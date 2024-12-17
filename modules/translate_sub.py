@@ -60,35 +60,43 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # 清理與格式化 SRT 文件
+# 清理與格式化 SRT 文件
 def clean_and_format_srt(srt_lines):
     cleaned_lines = []
     previous_time_marker = None  # 記錄上一次的時間標記
 
     for line in srt_lines:
-        
+        # 移除每行開頭和結尾的空格
+        line = line.strip()
 
         # 將 ' - >' 替換為 '-->'
         line = line.replace(" - >", " -->")
+        
+        # 將全形冒號替換為半形冒號
+        line = line.replace("：", ":")
+        line = line.replace(" ： ", " : ")
 
         # 檢查是否是時間軸
-        time_marker_match = re.match(r"^ \d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}$", line)
+        time_marker_match = re.match(r"^\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}$", line)
 
         # 如果是時間軸，檢查是否與上一個時間軸相同
         if time_marker_match:
             if line == previous_time_marker:
-                break  # 如果時間軸相同，跳過這一行
+                continue  # 如果時間軸相同，跳過這一行
             previous_time_marker = line  # 更新上一行的時間軸
 
         # 將時間軸拆開並比較
         time_lines = line.split("\n")
         if len(time_lines) == 1:
-            line=line
-        if len(time_lines) == 2:
+            line = line
+        elif len(time_lines) >= 2:
             line1 = time_lines[0].strip()
             line2 = time_lines[1].strip()
 
             if line1 == line2:  # 如果兩個時間軸相同，則跳過第二個
-                line=line1
+                line = line1
+            else:
+                line = f"{line1}\n{line2}"
         if len(time_lines) == 3:
             line1 = time_lines[0].strip()
             line2 = time_lines[1].strip()

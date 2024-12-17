@@ -43,54 +43,54 @@ class MovieSearch:
             print(f"Azure 翻譯客戶端初始化錯誤: {e}")
             self.translator = None
 
-    def _detect_language(self, text):
-        """
-        偵測輸入文本的語言
-        :param text: 要偵測語言的文本
-        :return: 語言代碼
-        """
-        if not self.translator:
-            return 'und'  # 未知語言
+    # def _detect_language(self, text):
+    #     """
+    #     偵測輸入文本的語言
+    #     :param text: 要偵測語言的文本
+    #     :return: 語言代碼
+    #     """
+    #     if not self.translator:
+    #         return 'und'  # 未知語言
         
-        try:
-            response = self.translator.detect_language(body=[text])
-            if response and response[0].language:
-                return response[0].language
-            return 'und'
-        except Exception as e:
-            print(f"語言偵測失敗: {e}")
-            return 'und'
+    #     try:
+    #         response = self.translator.detect_language(body=[text])
+    #         if response and response[0].language:
+    #             return response[0].language
+    #         return 'und'
+    #     except Exception as e:
+    #         print(f"語言偵測失敗: {e}")
+    #         return 'und'
 
-    def _translate_text(self, text, target_language='zh-Hant'):
-        """
-        使用 Azure 翻譯文本
-        :param text: 要翻譯的文本
-        :param target_language: 目標語言代碼
-        :return: 翻譯後的文本
-        """ 
-        if not self.translator or not text:
-            print("Azure 翻譯器未初始化或文本為空")
-            return text
+    # def _translate_text(self, text, target_language='zh-Hant'):
+    #     """
+    #     使用 Azure 翻譯文本
+    #     :param text: 要翻譯的文本
+    #     :param target_language: 目標語言代碼
+    #     :return: 翻譯後的文本
+    #     """ 
+    #     if not self.translator or not text:
+    #         print("Azure 翻譯器未初始化或文本為空")
+    #         return text
 
-        try:
-            # 如果文本已經是中文，直接返回
-            if self._detect_language(text) in ['zh-Hant', 'zh-Hans', 'zh']:
-                return text
+    #     try:
+    #         # 如果文本已經是中文，直接返回
+    #         if self._detect_language(text) in ['zh-Hant', 'zh-Hans', 'zh']:
+    #             return text
 
-            # 翻譯
-            response = self.translator.translate(
-                body = [text], 
-                to_language = [target_language]
-            )
-            # 返回第一個翻譯結果
-            if response and response[0].translations:
-                return response[0].translations[0].text
-            else:
-                print("未找到翻譯結果")
-                return text
-        except Exception as e:
-            print(f"翻譯失敗: {e}")
-            return text
+    #         # 翻譯
+    #         response = self.translator.translate(
+    #             body = [text], 
+    #             to_language = [target_language]
+    #         )
+    #         # 返回第一個翻譯結果
+    #         if response and response[0].translations:
+    #             return response[0].translations[0].text
+    #         else:
+    #             print("未找到翻譯結果")
+    #             return text
+    #     except Exception as e:
+    #         print(f"翻譯失敗: {e}")
+    #         return text
 
     def _get_movie_reviews(self, movie_id):
         """
@@ -132,9 +132,9 @@ class MovieSearch:
         """
         try:
             # 偵測並翻譯電影名稱（如果不是中文）
-            detected_lang = self._detect_language(movie_name)
-            if detected_lang not in ['zh-Hant', 'zh-Hans', 'zh']:
-                movie_name = self._translate_text(movie_name, 'en')
+            # detected_lang = self._detect_language(movie_name)
+            # if detected_lang not in ['zh-Hant', 'zh-Hans', 'zh']:
+            #     movie_name = self._translate_text(movie_name, 'en')
             
             # 第一步：搜尋電影
             search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}"
@@ -161,20 +161,25 @@ class MovieSearch:
             movie_reviews = self._get_movie_reviews(movie_id)
             
             # 翻譯電影名稱
-            translated_title = self._translate_text(movie_details['title'])
+            # translated_title = self._translate_text(movie_details['title'])
+            translated_title = movie_details['title']
             
             # 翻譯劇情簡介
-            translated_overview = self._translate_text(movie_details['overview'])
+            # translated_overview = self._translate_text(movie_details['overview'])
+            translated_overview = movie_details['overview']
             
             # 提取導演
             directors = [crew['name'] for crew in movie_details.get('credits', {}).get('crew', [])
                          if crew['job'] == 'Director']
-            director = self._translate_text(directors[0]) if directors else "無資訊"
+            # director = self._translate_text(directors[0]) if directors else "無資訊"
+            director = directors[0] if directors else "無資訊"
             
             # 提取主演並翻譯
             actors = [actor['name'] for actor in movie_details.get('credits', {}).get('cast', [])[:3]]
-            translated_actors = [self._translate_text(actor) for actor in actors]
-            main_actors = "、".join(translated_actors) if translated_actors else "無資訊"
+            # translated_actors = [self._translate_text(actor) for actor in actors]
+            translated_actors = actors
+            # main_actors = "、".join(translated_actors) if translated_actors else "無資訊"
+            main_actors = "、".join(actors) if actors else "無資訊"
             
             # 取得上映年份的中文格式
             release_date = datetime.strptime(movie_details['release_date'], "%Y-%m-%d")
@@ -182,7 +187,8 @@ class MovieSearch:
             
             # 產生類型列表
             genres = [genre['name'] for genre in movie_details.get('genres', [])]
-            translated_genres = [self._translate_text(genre) for genre in genres]
+            # translated_genres = [self._translate_text(genre) for genre in genres]
+            translated_genres = genres
             genres_str = "、".join(translated_genres) if translated_genres else "無資訊"
             
             # 製作國家
@@ -213,6 +219,9 @@ class MovieSearch:
             
             # 處理電影評論
             reviews_section = ""
+            
+            # 查詢英文評論，並翻譯成中文
+        
             if movie_reviews:
                 # 取前三則或全部評論
                 display_reviews = movie_reviews[:3] if len(movie_reviews) > 3 else movie_reviews

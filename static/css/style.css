@@ -11,6 +11,7 @@ body {
 }
 h1 {
     text-align: center; /* 置中標題 */
+    font-size: 4em; /* 調整字體大小 */
 }
 .current-mode {
     margin-top: 10px;
@@ -162,4 +163,50 @@ h1 {
 .file-upload-label img {
     width: 24px;
     height: 24px;
+}
+
+.subtitles {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #444654;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.subtitles form {
+    width: 100%;
+}
+.subtitles label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+.subtitles input[type="file"],
+.subtitles input[type="text"] {
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3e3f4b;
+    color: white;
+    outline: none; /* 移除藍白邊 */
+    margin-bottom: 10px;
+}
+.subtitles button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #10a37f;
+    color: white;
+}
+.subtitles button:hover {
+    background-color: #0e8c6a;
 }

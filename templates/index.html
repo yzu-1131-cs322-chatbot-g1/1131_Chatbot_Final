@@ -26,5 +26,16 @@
                     onkeydown="handleKeyDown(event)"></textarea>
         <button onclick="sendMessage()">送出</button>
     </div>
+    <div class="subtitles" id="subtitles" style="display: none;">
+        <form action="/translate_srt" method="POST" enctype="multipart/form-data">
+            <label for="file">選擇 SRT 檔案：</label>
+            <input type="file" name="file" id="file" accept=".srt" required><br><br>
+    
+            <label for="languages">選擇翻譯語言（可選擇多個語言，使用空格分隔）：</label><br>
+            <input type="text" name="languages" id="languages" required placeholder=""><br><br>
+    
+            <button type="submit">上傳並翻譯</button>
+        </form>
+    </div>
 </body>
 </html>

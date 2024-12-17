@@ -13,7 +13,10 @@ function setChatMode(mode) {
             document.getElementById('chat-box').innerHTML = ''; // 清空對話框
 
             const chatInputContainer = document.querySelector('.chat-input');
-            if (mode === 'GUESS_MOVIE' || mode === 'SUB_TRANSLATE') {
+            const chatBoxContainer = document.querySelector('.chat-box');
+            const subtitlesContainer = document.querySelector('.subtitles');
+            
+            if (mode === 'GUESS_MOVIE') {
                 chatInputContainer.innerHTML = `
                     <label for="file-input" class="file-upload-label" style="border-radius: 10px 10px 10px 10px;">
                         <img src="/static/images/attachment.png" alt="Upload">
@@ -21,13 +24,19 @@ function setChatMode(mode) {
                     </label>
                     <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
                 `;
-            } 
+                chatInputContainer.style.display = 'flex';
+                chatBoxContainer.style.display = 'flex';
+                subtitlesContainer.style.display = 'none';
+            }
             else if (mode === 'SEARCH_MOVIE') {
                 chatInputContainer.innerHTML = `
                     <textarea style="border-radius: 10px 0px 0px 10px;" id="chat-input" placeholder="輸入電影名稱..." 
                     onkeydown="handleKeyDown(event)"></textarea>
                     <button onclick="sendMessage()">送出</button>
                 `;   
+                chatInputContainer.style.display = 'flex';
+                chatBoxContainer.style.display = 'flex';
+                subtitlesContainer.style.display = 'none';
             }
             else if (mode === 'GEMINI') {
                 chatInputContainer.innerHTML = `
@@ -39,6 +48,14 @@ function setChatMode(mode) {
                     onkeydown="handleKeyDown(event)"></textarea>
                     <button onclick="sendMessage()">送出</button>
                 `;
+                chatInputContainer.style.display = 'flex';
+                chatBoxContainer.style.display = 'flex';
+                subtitlesContainer.style.display = 'none';
+            }
+            else if (mode === 'SUB_TRANSLATE') {
+                chatInputContainer.style.display = 'none';
+                chatBoxContainer.style.display = 'none';
+                subtitlesContainer.style.display = 'flex';
             }
         })
 }

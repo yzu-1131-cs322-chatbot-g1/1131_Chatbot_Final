@@ -131,7 +131,6 @@ class MovieSearch:
         :return: 電影詳細資訊字典
         """
         try:
-<<<<<<< Updated upstream
             # 偵測並翻譯電影名稱（如果不是中文）
             detected_lang = self._detect_language(movie_name)
             if detected_lang not in ['zh-Hant', 'zh-Hans', 'zh']:
@@ -139,46 +138,14 @@ class MovieSearch:
             
             # 第一步：搜尋電影
             search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}"
-=======
-            # 首先嘗試精確匹配
-            search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}&language=zh-TW"
->>>>>>> Stashed changes
             search_response = requests.get(search_url)
+            if search_response.status_code != 200:
+                return f"搜尋電影時發生錯誤：{search_response.status_code}"
             search_data = search_response.json()
-
-            # 篩選最佳匹配
-            def find_best_match(results, query):
-                # 精確匹配優先
-                exact_matches = [movie for movie in results if movie['title'] == query or movie['original_title'] == query]
-                if exact_matches:
-                    return exact_matches[0]
-                
-                # 包含匹配
-                contains_matches = [movie for movie in results if query in movie['title'] or query in movie['original_title']]
-                if contains_matches:
-                    return contains_matches[0]
-                
-                # 如果沒有特殊匹配，返回第一個結果
-                return results[0] if results else None
-
-            # 如果找到結果
-            if search_data['results']:
-                best_match = find_best_match(search_data['results'], movie_name)
-                if best_match:
-                    movie_id = best_match['id']
-                else:
-                    return "找不到相關電影"
-            else:
-                # 如果中文搜尋找不到，嘗試英文
-                english_name = self._translate_text(movie_name, 'en')
-                search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={english_name}"
-                search_response = requests.get(search_url)
-                search_data = search_response.json()
-                
-                if search_data['results']:
-                    movie_id = search_data['results'][0]['id']
-                else:
-                    return "找不到相關電影"
+           
+            # 如果沒有找到電影
+            if not search_data['results']:
+                return "找不到相關電影"
             
             # 取第一個搜尋結果的電影 ID
             movie_id = search_data['results'][0]['id']
@@ -220,12 +187,7 @@ class MovieSearch:
             
             # 製作國家
             production_countries = [country['name'] for country in movie_details.get('production_countries', [])]
-<<<<<<< Updated upstream
             countries_str = "、".join(production_countries) if production_countries else "無資訊"
-=======
-            translated_countries = [self._translate_text(country) for country in production_countries]
-            countries_str = "、".join(translated_countries) if translated_countries else "無資訊"
->>>>>>> Stashed changes
             
             # 製片公司
             production_companies = [company['name'] for company in movie_details.get('production_companies', [])]
@@ -260,11 +222,7 @@ class MovieSearch:
                     reviews_section += f"👤 作者: {review['author']}\n"
                     if review['rating'] != '無':
                         reviews_section += f"⭐ 評分: {review['rating']}/10\n"
-<<<<<<< Updated upstream
                     reviews_section += f"💬 內容: {review['content']}\n\n"
-=======
-                    reviews_section += f"💬 內容: {review['content'][:100]}...\n\n"
->>>>>>> Stashed changes
             else:
                 reviews_section = "🎬 電影評價: 這部電影還沒有人評論\n"
             
@@ -273,12 +231,9 @@ class MovieSearch:
 📝 電影名稱: {translated_title}
 🌍 原始語言: {original_language.upper()}
 ⭐ 電影評分: {movie_details['vote_average']}/10
-<<<<<<< Updated upstream
 {reviews_section}
 📊 評價統計:
 🔢 總投票數: {movie_details['vote_count']} 票
-=======
->>>>>>> Stashed changes
 
 📅 上映資訊:
 🗓️ 上映日期: {formatted_release_date}
@@ -302,11 +257,6 @@ class MovieSearch:
 💸 電影預算: ${budget:,} USD
 💰 全球票房: ${revenue:,} USD
 
-<<<<<<< Updated upstream
-=======
-{reviews_section}
-
->>>>>>> Stashed changes
 """
             return message
        

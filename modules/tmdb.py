@@ -257,6 +257,7 @@ class MovieSearch:
 💸 電影預算: ${budget:,} USD
 💰 全球票房: ${revenue:,} USD
 
+{reviews_section}
 """
             return message
        

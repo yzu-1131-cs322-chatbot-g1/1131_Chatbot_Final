@@ -1,3 +1,4 @@
+from ffmpeg import output
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -5,7 +6,7 @@ import shutil
 
 # custom modules
 from modules.config import config
-from modules import line, gemini
+from modules import line, gemini, subtitle
 from modules.gemini import guess_movie
 
 app = Flask(__name__)
@@ -109,6 +110,20 @@ def upload_file():
 
         if line.chat_mode == line.ChatMode.GUESS_MOVIE:
             reply = gemini.guess_movie([file_path])
+        if line.chat_mode == line.ChatMode.SUB_TRANSLATE:
+            # create outputs folder
+            if not os.path.exists('outputs'):
+                os.makedirs('outputs')
+            output_path = os.path.abspath('outputs').replace("\\", "/")
+            input_file_path = os.path.abspath(file_path).replace("\\", "/")
+            output_video_path = os.path.abspath(f'uploads/subtitled_{filename}').replace("\\", "/")
+            subtitle_path = f'outputs/{filename}.srt'
+            subtitle.video_to_subtitle(input_file_path, subtitle_path)
+
+            # generate subtitled video
+
+            subtitle.embed_subtitles(output_path, input_file_path, subtitle_path, output_video_path)
+            reply = request.url_root + f'uploads/subtitled_{filename}'
         else:
             reply = f'檔案 {filename} 上傳成功'
 

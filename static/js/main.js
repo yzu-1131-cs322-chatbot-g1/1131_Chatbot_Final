@@ -13,7 +13,7 @@ function setChatMode(mode) {
             document.getElementById('chat-box').innerHTML = ''; // 清空對話框
 
             const chatInputContainer = document.querySelector('.chat-input');
-            if (mode === 'GUESS_MOVIE') {
+            if (mode === 'GUESS_MOVIE' || mode === 'SUB_TRANSLATE') {
                 chatInputContainer.innerHTML = `
                     <label for="file-input" class="file-upload-label" style="border-radius: 10px 10px 10px 10px;">
                         <img src="/static/images/attachment.png" alt="Upload">

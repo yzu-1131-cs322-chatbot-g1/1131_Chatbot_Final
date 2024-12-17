@@ -76,7 +76,10 @@ def send_message():
         return jsonify({'reply': '請輸入訊息'}), 400
 
     # 使用當前的聊天模式處理訊息
-    reply = line.command_handler(message)
+    if line.chat_mode == line.ChatMode.GEMINI:
+        reply = gemini.chat(message, line.uploaded_images)
+    else:
+        reply = line.command_handler(message)
     return jsonify({'reply': reply})
 
 @app.route('/upload_file', methods=['POST'])
@@ -95,6 +98,7 @@ def upload_file():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
+        line.uploaded_images.append(file_path)
 
         if line.chat_mode == line.ChatMode.GUESS_MOVIE:
             reply = gemini.guess_movie([file_path])

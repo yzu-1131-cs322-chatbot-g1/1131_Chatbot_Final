@@ -44,6 +44,10 @@ SPEECH_REGION=替換成你的
 
 [TMDB]
 API_KEY=群組裡有
+
+[AzureLanguage]
+API_KEY=替換成你的
+END_POINT=替換成你的
 ```
 
 ## 開發

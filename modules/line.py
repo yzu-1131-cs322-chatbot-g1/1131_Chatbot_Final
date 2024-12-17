@@ -117,7 +117,7 @@ command_handler = CommandHandlers[chat_mode]
 uploaded_images: list[str] = []
 
 
-def handle_text_message(event) -> None:
+def handle_text_message(event, text = None) -> None:
     r"""
     處理文字訊息的函數。
 
@@ -126,7 +126,7 @@ def handle_text_message(event) -> None:
     當文字訊息不是指令時，會根據目前聊天模式取得對應的處理函數並進行回應。
     """
     global chat_mode, command_handler, uploaded_images
-    text = event.message.text
+    text = text if text else event.message.text
     result = ""
 
     # text is a command
@@ -269,6 +269,7 @@ def handle_audio_message(event) -> None:
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
             print(f"辨識結果：{result.text}")
             #return result.text
+            handle_text_message(event, result.text)
     elif result.reason == speechsdk.ResultReason.NoMatch:
             print("無法辨識語音內容。")
             #return "無法辨識語音內容"
@@ -280,14 +281,14 @@ def handle_audio_message(event) -> None:
             #return "語音轉文字失敗"
 
     # 回應使用者
-    with ApiClient(configuration) as api_client:
-        line_bot_api = MessagingApi(api_client)
-        line_bot_api.reply_message_with_http_info(
-            ReplyMessageRequest(
-                reply_token=event.reply_token,
-                messages=[TextMessage(text=result.text)]
-            )
-        )
+    # with ApiClient(configuration) as api_client:
+    #     line_bot_api = MessagingApi(api_client)
+    #     line_bot_api.reply_message_with_http_info(
+    #         ReplyMessageRequest(
+    #             reply_token=event.reply_token,
+    #             messages=[TextMessage(text=result.text)]
+    #         )
+    #     )
         
 
 

@@ -3,6 +3,7 @@
 
 config.ini
 uploads
+audio
 
 ##############################################################################################################
 ### The following paths are referenced from https://github.com/github/gitignore/blob/main/Python.gitignore ###

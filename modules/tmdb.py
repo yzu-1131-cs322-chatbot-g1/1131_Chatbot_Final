@@ -44,54 +44,54 @@ class MovieSearch:
             print(f"Azure 翻譯客戶端初始化錯誤: {e}")
             self.translator = None
 
-    # def _detect_language(self, text):
-    #     """
-    #     偵測輸入文本的語言
-    #     :param text: 要偵測語言的文本
-    #     :return: 語言代碼
-    #     """
-    #     if not self.translator:
-    #         return 'und'  # 未知語言
+    def _detect_language(self, text):
+        """
+        偵測輸入文本的語言
+        :param text: 要偵測語言的文本
+        :return: 語言代碼
+        """
+        if not self.translator:
+            return 'und'  # 未知語言
         
-    #     try:
-    #         response = self.translator.detect_language(body=[text])
-    #         if response and response[0].language:
-    #             return response[0].language
-    #         return 'und'
-    #     except Exception as e:
-    #         print(f"語言偵測失敗: {e}")
-    #         return 'und'
+        try:
+            response = self.translator.detect_language(body=[text])
+            if response and response[0].language:
+                return response[0].language
+            return 'und'
+        except Exception as e:
+            print(f"語言偵測失敗: {e}")
+            return 'und'
 
-    # def _translate_text(self, text, target_language='zh-Hant'):
-    #     """
-    #     使用 Azure 翻譯文本
-    #     :param text: 要翻譯的文本
-    #     :param target_language: 目標語言代碼
-    #     :return: 翻譯後的文本
-    #     """ 
-    #     if not self.translator or not text:
-    #         print("Azure 翻譯器未初始化或文本為空")
-    #         return text
+    def _translate_text(self, text, target_language='zh-Hant'):
+        """
+        使用 Azure 翻譯文本
+        :param text: 要翻譯的文本
+        :param target_language: 目標語言代碼
+        :return: 翻譯後的文本
+        """ 
+        if not self.translator or not text:
+            print("Azure 翻譯器未初始化或文本為空")
+            return text
 
-    #     try:
-    #         # 如果文本已經是中文，直接返回
-    #         if self._detect_language(text) in ['zh-Hant', 'zh-Hans', 'zh']:
-    #             return text
+        try:
+            # 如果文本已經是中文，直接返回
+            if self._detect_language(text) in ['zh-Hant', 'zh-Hans', 'zh']:
+                return text
 
-    #         # 翻譯
-    #         response = self.translator.translate(
-    #             body = [text], 
-    #             to_language = [target_language]
-    #         )
-    #         # 返回第一個翻譯結果
-    #         if response and response[0].translations:
-    #             return response[0].translations[0].text
-    #         else:
-    #             print("未找到翻譯結果")
-    #             return text
-    #     except Exception as e:
-    #         print(f"翻譯失敗: {e}")
-    #         return text
+            # 翻譯
+            response = self.translator.translate(
+                body = [text], 
+                to_language = [target_language]
+            )
+            # 返回第一個翻譯結果
+            if response and response[0].translations:
+                return response[0].translations[0].text
+            else:
+                print("未找到翻譯結果")
+                return text
+        except Exception as e:
+            print(f"翻譯失敗: {e}")
+            return text
 
     def _get_movie_reviews(self, movie_id):
         """
@@ -114,7 +114,7 @@ class MovieSearch:
             for review in reviews_data.get('results', []):
                 translated_content = self._translate_text(review['content'])
                 translated_reviews.append({
-                    'author': self._translate_text(review['author']),
+                    'author': review['author'],
                     'content': translated_content,
                     'rating': review.get('author_details', {}).get('rating', '無')
                 })
@@ -138,7 +138,7 @@ class MovieSearch:
             #     movie_name = self._translate_text(movie_name, 'en')
             
             # 第一步：搜尋電影
-            search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}"
+            search_url = f"{self.base_url}/search/movie?api_key={self.tmdb_api_key}&query={movie_name}&language=zh-TW"
             search_response = requests.get(search_url)
             if search_response.status_code != 200:
                 return f"搜尋電影時發生錯誤：{search_response.status_code}"
@@ -238,37 +238,37 @@ class MovieSearch:
             
             # 格式化回覆訊息
             message = f"""🎬 電影基本資訊:
-            📝 電影名稱: {translated_title}
-            🌍 原始語言: {original_language.upper()}
-            ⭐ 電影評分: {movie_details['vote_average']}/10
-            {reviews_section}
-            📊 評價統計:
-            🔢 總投票數: {movie_details['vote_count']} 票
-            
-            📅 上映資訊:
-            🗓️ 上映日期: {formatted_release_date}
-            📊 電影狀態: {movie_status}
-            
-            👥 創作團隊:
-            🎥 導演: {director}
-            🌟 主演: {main_actors}
-            
-            🎭 電影類型: {genres_str}
-            
-            📍 製作資訊:
-            🌐 製作國家: {countries_str}
-            🏢 製片公司: {companies_str}
-            🗣️ 電影語言: {languages_str}
-            
-            📖 劇情簡介: 
-            {translated_overview}
-            
-            💰 財務資訊:
-            💸 電影預算: ${budget:,} USD
-            💰 全球票房: ${revenue:,} USD
-            
-            {reviews_section}
-            """
+📝 電影名稱: {translated_title}
+🌍 原始語言: {original_language.upper()}
+⭐ 電影評分: {movie_details['vote_average']}/10
+
+📊 評價統計:
+🔢 總投票數: {movie_details['vote_count']} 票
+
+📅 上映資訊:
+🗓️ 上映日期: {formatted_release_date}
+📊 電影狀態: {movie_status}
+
+👥 創作團隊:
+🎥 導演: {director}
+🌟 主演: {main_actors}
+
+🎭 電影類型: {genres_str}
+
+📍 製作資訊:
+🌐 製作國家: {countries_str}
+🏢 製片公司: {companies_str}
+🗣️ 電影語言: {languages_str}
+
+📖 劇情簡介: 
+{translated_overview}
+
+💰 財務資訊:
+💸 電影預算: ${budget:,} USD
+💰 全球票房: ${revenue:,} USD
+
+{reviews_section}
+"""
             return message
        
         except Exception as e:

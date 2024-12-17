@@ -24,7 +24,8 @@ function setChatMode(mode) {
             } 
             else if (mode === 'SEARCH_MOVIE') {
                 chatInputContainer.innerHTML = `
-                    <input type="text" style="border-radius: 10px 10px 10px 10px;" id="chat-input" placeholder="輸入電影名稱..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                    <textarea style="border-radius: 10px 0px 0px 10px;" id="chat-input" placeholder="輸入電影名稱..." 
+                    onkeydown="handleKeyDown(event)"></textarea>
                     <button onclick="sendMessage()">送出</button>
                 `;   
             }
@@ -34,11 +35,29 @@ function setChatMode(mode) {
                         <img src="/static/images/attachment.png" alt="Upload">
                     </label>
                     <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
-                    <input type="text" id="chat-input" placeholder="輸入訊息..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                    <textarea style="border-radius: 0px 0px 0px 0px;" id="chat-input" placeholder="輸入訊息..." 
+                    onkeydown="handleKeyDown(event)"></textarea>
                     <button onclick="sendMessage()">送出</button>
                 `;
             }
         })
+}
+
+function handleKeyDown(event) {
+    const textarea = event.target;
+    const button = textarea.nextElementSibling; // 獲取緊接著的按鈕元素
+    const label = textarea.previousElementSibling.previousElementSibling; // 獲取緊接著的標籤元素
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    } else {
+        // 自動調整高度
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+        button.style.height = `${textarea.scrollHeight}px`; // 調整按鈕高度
+        label.style.height = `${textarea.scrollHeight}px`; // 調整標籤高度
+        label.style.lineHeight = `${textarea.scrollHeight}px`; // 調整標籤內部對齊
+    }
 }
 
 function sendMessage() {

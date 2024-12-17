@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>電影AI助手</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" type="image/x-icon" href="static\images\movie.png">
+    <link rel="icon" type="image/x-icon" href="static/images/movie.png">
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body>
@@ -22,7 +22,8 @@
             <img src="{{ url_for('static', filename='images/attachment.png') }}" alt="Upload">
         </label>
         <input type="file" id="file-input" style="display: none;" onchange="uploadFile()">
-        <input type="text" id="chat-input" placeholder="輸入訊息..." onkeydown="if(event.key === 'Enter') sendMessage()">
+        <textarea style="border-radius: 0px 0px 0px 0px;" id="chat-input" placeholder="輸入訊息..." 
+                    onkeydown="handleKeyDown(event)"></textarea>
         <button onclick="sendMessage()">送出</button>
     </div>
 </body>

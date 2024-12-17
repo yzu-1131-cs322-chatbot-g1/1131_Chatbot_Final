@@ -7,4 +7,4 @@ import configparser
 config = configparser.ConfigParser()
 config.read("config.ini", encoding="utf-8")
 
-config["Line"]["USER_IMAGE_PATH"] = "user_images"
+config["Line"]["USER_IMAGE_PATH"] = "uploads"

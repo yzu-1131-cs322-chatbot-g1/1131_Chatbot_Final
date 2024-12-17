@@ -8,6 +8,7 @@ import shutil
 from modules.config import config
 from modules import line, gemini, subtitle
 from modules.gemini import guess_movie
+from modules.translate_sub import translate_srt
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -148,6 +149,10 @@ def hello_world():
         msg=config['test']['message'],
         chat_mode=line.chat_mode.value
     )
+    
+@app.route('/translate_srt', methods=['POST'])
+def call_translate_srt():
+    return translate_srt()
 
 if __name__ == '__main__':
     app.run()

@@ -2,7 +2,7 @@ const chatModeNames = {
     'GEMINI': '聊天',
     'SEARCH_MOVIE': '查詢資料庫',
     'GUESS_MOVIE': '以圖搜尋',
-    'SUB_TRANSLATE': '字幕翻譯'
+    'SUB_TRANSLATE': '字幕翻譯 (提示：檔案大小愈大，翻譯時間愈長)'
 };
 
 function setChatMode(mode) {

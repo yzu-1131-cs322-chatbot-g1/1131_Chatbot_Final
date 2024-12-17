@@ -231,6 +231,9 @@ class MovieSearch:
 📝 電影名稱: {translated_title}
 🌍 原始語言: {original_language.upper()}
 ⭐ 電影評分: {movie_details['vote_average']}/10
+{reviews_section}
+📊 評價統計:
+🔢 總投票數: {movie_details['vote_count']} 票
 
 📅 上映資訊:
 🗓️ 上映日期: {formatted_release_date}
@@ -254,10 +257,6 @@ class MovieSearch:
 💸 電影預算: ${budget:,} USD
 💰 全球票房: ${revenue:,} USD
 
-{reviews_section}
-
-📊 評價統計:
-🔢 總投票數: {movie_details['vote_count']} 票
 """
             return message
        

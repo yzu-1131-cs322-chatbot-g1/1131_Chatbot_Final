@@ -281,7 +281,13 @@ def search_movie_command(movie_name):
     :param movie_name: 電影名稱
     :return: 電影資訊訊息
     '''
-    movie_name, user_input = movie_name.split('\n', 1)
+    # 如果有使用者輸入，則分離電影名稱和使用者輸入，但可能只有一行電影名稱
+    user_input = None
+    if '\n' in movie_name:
+        movie_name, user_input = movie_name.split('\n', 1)
     movie_searcher = MovieSearch()
     movie_info = movie_searcher.search_movie(movie_name)
-    return gemini.db_query(movie_info, user_input)
+    if user_input:
+        return gemini.db_query(movie_info, user_input)
+    else:
+        return movie_info

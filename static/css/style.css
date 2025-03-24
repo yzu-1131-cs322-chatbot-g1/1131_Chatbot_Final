@@ -104,7 +104,7 @@ h1 {
     font-family: Arial, sans-serif;
 }
 .chat-input button {
-    padding: 29px; /* 移除上下 padding，確保高度一致 */
+    padding: 30px; /* 移除上下 padding，確保高度一致 */
     font-size: 16px;
     cursor: pointer;
     border: none;
@@ -151,7 +151,7 @@ h1 {
 }
 .file-upload-label {
     cursor: pointer;
-    height: 56px; 
+    height: 60px; 
     display: flex;
     align-items: center;
     justify-content: center;
